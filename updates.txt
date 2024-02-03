@@ -1,0 +1,13 @@
+Libraries:
+    - javalin -> 6.0.0
+    - slf4j-simple -> 2.0.11
+    - junit-jupiter-engine -> 5.9.2
+    - h2 -> 2.2.220
+    - jackson-databind -> 2.16.1
+    - mockito-core -> 5.10.0
+
+Refactor:
+    - junit 4.x -> junit-jupiter 5.x
+    - rename packages
+    - update javadocs
+    - update sql script
