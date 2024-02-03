@@ -1,8 +1,8 @@
 package dao;
 
-import Model.Account;
+import model.Account;
 
-public interface AccountDao extends Dao<Account>{
+public interface AccountDao extends Dao<Account> {
     void create(Account account);
     void update(Account account);
     void delete(Account account);

@@ -1,6 +1,6 @@
 package validator;
 
-import Model.Message;
+import model.Message;
 import service.MessageService;
 
 public class MessageValidator {

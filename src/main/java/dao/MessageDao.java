@@ -2,7 +2,7 @@ package dao;
 
 import java.util.List;
 
-import Model.Message;
+import model.Message;
 
 public interface MessageDao extends Dao<Message> {
     void create(Message message);

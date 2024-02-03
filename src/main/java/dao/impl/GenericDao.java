@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Util.ConnectionUtil;
+import util.ConnectionUtil;
 import dao.Dao;
 import exception.DaoException;
 
@@ -33,7 +33,7 @@ public abstract class GenericDao<E> implements Dao<E> {
                         if (generatedKeys.next()) {
                             setEntityId(entity, generatedKeys.getInt(1));
                         }
-                    }    
+                    }
                 }
             } catch (SQLException exception) {
                 connection.rollback();
@@ -44,7 +44,7 @@ public abstract class GenericDao<E> implements Dao<E> {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             throw new DaoException(e.getMessage(), e.getCause());
-        } 
+        }
     }
 
     @Override

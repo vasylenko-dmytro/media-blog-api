@@ -4,17 +4,17 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Controller.SocialMediaController;
-import Model.Account;
-import Util.ConnectionUtil;
+import controller.SocialMediaController;
+import model.Account;
+import util.ConnectionUtil;
 import io.javalin.Javalin;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserRegistrationTest {
     SocialMediaController socialMediaController;
@@ -23,11 +23,10 @@ public class UserRegistrationTest {
     Javalin app;
 
     /**
-     * Before every test, reset the database, restart the Javalin app, and create a new webClient and ObjectMapper
-     * for interacting locally on the web.
-     * @throws InterruptedException
+     * Before every test, reset the database, restart the Javalin app, and create a new webClient
+     * and ObjectMapper for interacting locally on the web.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws InterruptedException {
         ConnectionUtil.resetTestDatabase();
         socialMediaController = new SocialMediaController();
@@ -38,17 +37,18 @@ public class UserRegistrationTest {
         Thread.sleep(1000);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         app.stop();
     }
 
     /**
-     * Sending an http request to POST localhost:8080/register when username does not exist in the system
-     * 
+     * Sending an http request to POST localhost:8080/register
+     * when username does not exist in the system
+     * <p>
      * Expected Response:
-     *  Status Code: 200
-     *  Response Body: JSON representation of user object
+     * Status Code: 200
+     * Response Body: JSON representation of user object
      */
     @Test
     public void registerUserSuccessful() throws IOException, InterruptedException {
@@ -59,22 +59,22 @@ public class UserRegistrationTest {
                         "\"password\": \"password\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
-        Assert.assertEquals(200, status);
+        assertEquals(200, status);
         Account expectedAccount = new Account(2, "user", "password");
-        Account actualAccount = objectMapper.readValue(response.body().toString(), Account.class);
-        Assert.assertEquals(expectedAccount, actualAccount);
+        Account actualAccount = objectMapper.readValue(response.body(), Account.class);
+        assertEquals(expectedAccount, actualAccount);
 
     }
 
 
-     /**
+    /**
      * Sending an http request to POST localhost:8080/register when username already exists in system
-     * 
+     * <p>
      * Expected Response:
-     *  Status Code: 400
-     *  Response Body: 
+     * Status Code: 400
+     * Response Body:
      */
     @Test
     public void registerUserDuplicateUsername() throws IOException, InterruptedException {
@@ -85,22 +85,22 @@ public class UserRegistrationTest {
                         "\"password\": \"password\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response1 = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
-        HttpResponse response2 = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response1 = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status1 = response1.statusCode();
         int status2 = response2.statusCode();
-        Assert.assertEquals(200, status1);
-        Assert.assertEquals(400, status2);
-        Assert.assertEquals("", response2.body().toString());
+        assertEquals(200, status1);
+        assertEquals(400, status2);
+        assertEquals("", response2.body());
 
     }
 
     /**
      * Sending an http request to POST localhost:8080/register when no username provided
-     * 
+     * <p>
      * Expected Response:
-     *  Status Code: 400
-     *  Response Body: 
+     * Status Code: 400
+     * Response Body:
      */
     @Test
     public void registerUserUsernameBlank() throws IOException, InterruptedException {
@@ -111,23 +111,24 @@ public class UserRegistrationTest {
                         "\"password\": \"password\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
-        Assert.assertEquals(400, status);
-        Assert.assertEquals("", response.body().toString());
+        assertEquals(400, status);
+        assertEquals("", response.body());
 
     }
 
 
     /**
-     * Sending an http request to POST localhost:8080/register when no password is less than 4 characters
-     * 
+     * Sending an http request to POST localhost:8080/register
+     * when no password is less than 4 characters
+     * <p>
      * Expected Response:
-     *  Status Code: 400
-     *  Response Body: 
+     * Status Code: 400
+     * Response Body:
      */
     @Test
-    public void registeUserPasswordLengthLessThanFour() throws IOException, InterruptedException {
+    public void registerUserPasswordLengthLessThanFour() throws IOException, InterruptedException {
         HttpRequest postRequest = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/register"))
                 .POST(HttpRequest.BodyPublishers.ofString("{" +
@@ -135,10 +136,10 @@ public class UserRegistrationTest {
                         "\"password\": \"pas\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
-        Assert.assertEquals(400, status);
-        Assert.assertEquals("", response.body().toString());
-
+        assertEquals(400, status);
+        assertEquals("", response.body());
     }
+
 }

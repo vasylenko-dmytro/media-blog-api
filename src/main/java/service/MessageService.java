@@ -2,12 +2,12 @@ package service;
 
 import java.util.List;
 
-import Model.Message;
+import model.Message;
 import dao.impl.MessageDaoImpl;
 
 public class MessageService {
     private MessageDaoImpl messageDaoImpl;
-    
+
     public MessageService() {
         messageDaoImpl = new MessageDaoImpl();
     }
@@ -19,7 +19,7 @@ public class MessageService {
     public void create(Message message) {
         messageDaoImpl.create(message);
     }
-    
+
     public List<Message> findAllMessages() {
         return messageDaoImpl.findAll();
     }

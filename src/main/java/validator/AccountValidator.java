@@ -1,6 +1,6 @@
 package validator;
 
-import Model.Account;
+import model.Account;
 import service.AccountService;
 
 public class AccountValidator {
@@ -19,6 +19,6 @@ public class AccountValidator {
     }
 
     public boolean isUsernameExist(Account account) {
-        return service.findAccountByUsername(account.getUsername()) != null; 
+        return service.findAccountByUsername(account.getUsername()) != null;
     }
 }

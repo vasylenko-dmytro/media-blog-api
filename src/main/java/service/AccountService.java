@@ -1,11 +1,11 @@
 package service;
 
-import Model.Account;
+import model.Account;
 import dao.impl.AccountDaoImpl;
 
 public class AccountService {
     private AccountDaoImpl accountDaoImpl;
-    
+
     public AccountService() {
         accountDaoImpl = new AccountDaoImpl();
     }

@@ -1,4 +1,4 @@
-# Project: Social media blog API
+# Test Project: Social media blog API
 
 ## Background 
 
@@ -84,7 +84,7 @@ As a user, I should be able to submit a GET request on the endpoint GET localhos
 
 # Further guidance
 
-Some classes are already complete and SHOULD NOT BE CHANGED - Integration tests, Model classes for Account and Message, a ConnectionUtil class. Changing any of these classes will likely result in the test cases being impossible to pass.
+Some classes are already complete and SHOULD NOT BE CHANGED - Integration tests, model classes for Account and Message, a ConnectionUtil class. Changing any of these classes will likely result in the test cases being impossible to pass.
 
 The .sql script found in src/main/resources is already complete and SHOULD NOT BE CHANGED. Changing this file will likely result in the test cases being impossible to pass.
 

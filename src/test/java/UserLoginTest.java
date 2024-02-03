@@ -4,17 +4,17 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Controller.SocialMediaController;
-import Model.Account;
-import Util.ConnectionUtil;
+import controller.SocialMediaController;
+import model.Account;
+import util.ConnectionUtil;
 import io.javalin.Javalin;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserLoginTest {
 
@@ -24,11 +24,10 @@ public class UserLoginTest {
     Javalin app;
 
     /**
-     * Before every test, reset the database, restart the Javalin app, and create a new webClient and ObjectMapper
-     * for interacting locally on the web.
-     * @throws InterruptedException
+     * Before every test, reset the database, restart the Javalin app, and create a new webClient
+     * and ObjectMapper for interacting locally on the web.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws InterruptedException {
         ConnectionUtil.resetTestDatabase();
         socialMediaController = new SocialMediaController();
@@ -39,17 +38,17 @@ public class UserLoginTest {
         Thread.sleep(1000);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         app.stop();
     }
 
     /**
      * Sending an http request to POST localhost:8080/login with valid username and password
-     * 
+     * <p>
      * Expected Response:
-     *  Status Code: 200
-     *  Response Body: JSON representation of user object
+     * Status Code: 200
+     * Response Body: JSON representation of user object
      */
     @Test
     public void loginSuccessful() throws IOException, InterruptedException {
@@ -60,23 +59,23 @@ public class UserLoginTest {
                         "\"password\": \"password\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
 
-        Assert.assertEquals(200, status);
+        assertEquals(200, status);
         ObjectMapper om = new ObjectMapper();
         Account expectedResult = new Account(1, "testuser1", "password");
-        Account actualResult = om.readValue(response.body().toString(), Account.class);
-        Assert.assertEquals(expectedResult, actualResult);        
+        Account actualResult = om.readValue(response.body(), Account.class);
+        assertEquals(expectedResult, actualResult);
 
     }
 
     /**
      * Sending an http request to POST localhost:8080/login with invalid username
-     * 
+     * <p>
      * Expected Response:
-     *  Status Code: 401
-     *  Response Body: 
+     * Status Code: 401
+     * Response Body:
      */
     @Test
     public void loginInvalidUsername() throws IOException, InterruptedException {
@@ -87,21 +86,20 @@ public class UserLoginTest {
                         "\"password\": \"password\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
 
-        Assert.assertEquals(401, status);
-        Assert.assertEquals("", response.body().toString());
+        assertEquals(401, status);
+        assertEquals("", response.body());
 
     }
-    
 
     /**
      * Sending an http request to POST localhost:8080/login with invalid password
-     * 
+     * <p>
      * Expected Response:
-     *  Status Code: 401
-     *  Response Body: 
+     * Status Code: 401
+     * Response Body:
      */
     @Test
     public void loginInvalidPassword() throws IOException, InterruptedException {
@@ -112,11 +110,11 @@ public class UserLoginTest {
                         "\"password\": \"pass123\" }"))
                 .header("Content-Type", "application/json")
                 .build();
-        HttpResponse response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = webClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
         int status = response.statusCode();
 
-        Assert.assertEquals(401, status);
-        Assert.assertEquals("", response.body().toString());
-
+        assertEquals(401, status);
+        assertEquals("", response.body());
     }
+
 }
